@@ -1,54 +1,68 @@
-name: Yocto QEMU Build
+name: Yocto— QEMU
+
 on:
   workflow_dispatch:
   push:
     branches: [ main, master ]
-    paths: [ 'qemu.yml', '.github/workflows/yocto-qemu.yml' ]
+  pull_request:
+
+concurrency:
+  group: yocto-kas-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-22.04
+    # kas 공식 컨테이너에서 바로 실행 (경로 문제 예방)
+    container:
+      image: ghcr.io/siemens/kas/kas:latest
+      options: --user 0:0
+
+    permissions:
+      contents: read
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Free up disk space
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Show workspace (debug)
         run: |
-          sudo rm -rf /usr/local/lib/android /opt/ghc /usr/local/.ghcup /usr/share/dotnet || true
-          sudo docker system prune -af || true
-          df -h
-      - name: Cache Yocto downloads
+          pwd
+          ls -la
+
+      # Yocto 속도/용량 최적화: DL / SSTATE 캐시
+      - name: Restore DL & SSTATE caches
         uses: actions/cache@v4
         with:
-          path: build/downloads
-          key: downloads-${{ runner.os }}-${{ hashFiles('qemu.yml') }}
+          path: |
+            build/downloads
+            build/sstate-cache
+          key: yocto-${{ runner.os }}-${{ hashFiles('**/*.yml', '**/*.yaml') }}
           restore-keys: |
-            downloads-${{ runner.os }}-
-      - name: Cache Yocto sstate
-        uses: actions/cache@v4
-        with:
-          path: build/sstate-cache
-          key: sstate-${{ runner.os }}-${{ hashFiles('qemu.yml') }}
-          restore-keys: |
-            sstate-${{ runner.os }}-
+            yocto-${{ runner.os }}-
+
+      # (희귀) 일부 Yocto 스크립트가 Git safe.directory 요구할 때 대비
+      - name: Configure git safe.directory
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Build with kas
         run: |
-          docker pull ghcr.io/siemens/kas/kas:latest
-          docker run --rm -t \
-            -v "$PWD":/work \
-            -v "$PWD/build":/work/build \
-            -v "$PWD/build/downloads":/downloads \
-            -v "$PWD/build/sstate-cache":/sstate-cache \
-            -e KAS_BUILD_DIR=/work/build \
-            -e KAS_DL_DIR=/downloads \
-            -e KAS_SSTATE_DIR=/sstate-cache \
-            ghcr.io/siemens/kas/kas:latest \
-            build qemu.yml
-      - name: Upload QEMU artifacts
+          # qemu.yml이 리포 루트에 있을 때:
+          kas build qemu.yml
+          # 만약 kas/ 폴더 안에 있다면 위 줄 대신 ↓ 사용
+          # kas build kas/qemu.yml
+
+      # 산출물 업로드 (필요한 경로만 남겨두면 용량↓)
+      - name: Upload deploy artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: qemu-x86_64-image
+          name: yocto-deploy
           path: |
-            build/tmp/deploy/images/qemux86-64/bzImage
-            build/tmp/deploy/images/qemux86-64/*.ext4
-            build/tmp/deploy/images/qemux86-64/*.qemuboot.conf
-          if-no-files-found: error
+            build/tmp/deploy/images/**/*
+          if-no-files-found: warn
+          retention-days: 7
+
