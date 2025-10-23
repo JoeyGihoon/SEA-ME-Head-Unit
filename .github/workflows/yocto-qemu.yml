@@ -1,0 +1,54 @@
+name: Yocto QEMU Build
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+    paths: [ 'qemu.yml', '.github/workflows/yocto-qemu.yml' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/local/lib/android /opt/ghc /usr/local/.ghcup /usr/share/dotnet || true
+          sudo docker system prune -af || true
+          df -h
+      - name: Cache Yocto downloads
+        uses: actions/cache@v4
+        with:
+          path: build/downloads
+          key: downloads-${{ runner.os }}-${{ hashFiles('qemu.yml') }}
+          restore-keys: |
+            downloads-${{ runner.os }}-
+      - name: Cache Yocto sstate
+        uses: actions/cache@v4
+        with:
+          path: build/sstate-cache
+          key: sstate-${{ runner.os }}-${{ hashFiles('qemu.yml') }}
+          restore-keys: |
+            sstate-${{ runner.os }}-
+      - name: Build with kas
+        run: |
+          docker pull ghcr.io/siemens/kas/kas:latest
+          docker run --rm -t \
+            -v "$PWD":/work \
+            -v "$PWD/build":/work/build \
+            -v "$PWD/build/downloads":/downloads \
+            -v "$PWD/build/sstate-cache":/sstate-cache \
+            -e KAS_BUILD_DIR=/work/build \
+            -e KAS_DL_DIR=/downloads \
+            -e KAS_SSTATE_DIR=/sstate-cache \
+            ghcr.io/siemens/kas/kas:latest \
+            build qemu.yml
+      - name: Upload QEMU artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-x86_64-image
+          path: |
+            build/tmp/deploy/images/qemux86-64/bzImage
+            build/tmp/deploy/images/qemux86-64/*.ext4
+            build/tmp/deploy/images/qemux86-64/*.qemuboot.conf
+          if-no-files-found: error
