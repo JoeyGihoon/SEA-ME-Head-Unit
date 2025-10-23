@@ -6,18 +6,18 @@ build_system: oe
 machine: qemux86-64
 distro: poky
 target:
-  - core-image-sato   # GUI 데모. 가볍게 하려면 core-image-base/minimal
+  - core-image-sato   # 가볍게 하려면 core-image-minimal
 
 repos:
   poky:
     url: https://git.yoctoproject.org/poky
-    refspec: scarthgap          # ✅ 최신 kas 문법 (ref → refspec)
-    layers:                     # ✅ 리스트 형식으로 수정
-      - meta
-      - meta-poky
-      - meta-yocto-bsp
+    branch: scarthgap          # ✅ refspec -> branch
+    layers:                    # ✅ 문서 예시처럼 매핑 형태
+      meta:
+      meta-poky:
+      meta-yocto-bsp:
 
-# 빌드 속도/재현성 향상 (유지하는 게 좋음)
+# 빌드 속도/재현성 향상 (유지 권장)
 local_conf_header:
   speedups: |
     BB_HASHSERVE_UPSTREAM = "wss://hashserv.yoctoproject.org/ws"
