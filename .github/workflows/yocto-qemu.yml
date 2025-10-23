@@ -16,7 +16,7 @@ jobs:
     # kas 공식 컨테이너에서 바로 실행 (경로 문제 예방)
     container:
       image: ghcr.io/siemens/kas/kas:latest
-      options: --user 0:0
+     
 
     permissions:
       contents: read
