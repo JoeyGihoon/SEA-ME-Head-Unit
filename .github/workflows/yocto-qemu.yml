@@ -1,10 +1,7 @@
-name: Yocto— QEMU
+name: Yocto (kas) — QEMU
 
 on:
-  workflow_dispatch:
-  push:
-    branches: [ main, master ]
-  pull_request:
+  workflow_dispatch: {}  
 
 concurrency:
   group: yocto-kas-${{ github.ref }}
@@ -13,10 +10,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-22.04
-    # kas 공식 컨테이너에서 바로 실행 (경로 문제 예방)
-    container:
-      image: ghcr.io/siemens/kas/kas:latest
-     
 
     permissions:
       contents: read
@@ -28,12 +21,7 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - name: Show workspace (debug)
-        run: |
-          pwd
-          ls -la
-
-      # Yocto 속도/용량 최적화: DL / SSTATE 캐시
+      # (선택) Yocto 캐시: 네트워크/시간 절약
       - name: Restore DL & SSTATE caches
         uses: actions/cache@v4
         with:
@@ -44,18 +32,15 @@ jobs:
           restore-keys: |
             yocto-${{ runner.os }}-
 
-      # (희귀) 일부 Yocto 스크립트가 Git safe.directory 요구할 때 대비
-      - name: Configure git safe.directory
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      # kas 전용 액션: 내부적으로 컨테이너 실행 + 권한/UID 정리까지 처리
+      - name: Build via kas-action
+        uses: kas-project/kas-action@v2
+        with:
+          file: qemu.yml            # 리포 루트에 qemu.yml이 있을 때
+          # target: core-image-sato # 필요시 지정 (qemu.yml target에 이미 있으면 생략 가능)
+          ssh_auth_sock: false      # SSH 키 안 쓰면 false 유지
 
-      - name: Build with kas
-        run: |
-          # qemu.yml이 리포 루트에 있을 때:
-          kas build qemu.yml
-          # 만약 kas/ 폴더 안에 있다면 위 줄 대신 ↓ 사용
-          # kas build kas/qemu.yml
-
-      # 산출물 업로드 (필요한 경로만 남겨두면 용량↓)
+      # 산출물 업로드 (필요한 경로만)
       - name: Upload deploy artifacts
         if: always()
         uses: actions/upload-artifact@v4
