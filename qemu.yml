@@ -1,4 +1,3 @@
-# qemu.yml — Yocto QEMU(x86_64) 이미지 빌드 정의
 header:
   version: 11
 build_system: oe
@@ -6,18 +5,17 @@ build_system: oe
 machine: qemux86-64
 distro: poky
 target:
-  - core-image-sato   # 가볍게 하려면 core-image-minimal
+  - core-image-sato
 
 repos:
   poky:
     url: https://git.yoctoproject.org/poky
-    branch: scarthgap          # ✅ refspec -> branch
-    layers:                    # ✅ 문서 예시처럼 매핑 형태
+    branch: scarthgap
+    layers:
       meta:
       meta-poky:
       meta-yocto-bsp:
 
-# 빌드 속도/재현성 향상 (유지 권장)
 local_conf_header:
   speedups: |
     BB_HASHSERVE_UPSTREAM = "wss://hashserv.yoctoproject.org/ws"

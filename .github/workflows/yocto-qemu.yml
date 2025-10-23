@@ -1,7 +1,7 @@
 name: Yocto (kas) — QEMU
 
 on:
-  workflow_dispatch: {}  
+  workflow_dispatch: {}   # 수동 실행만
 
 concurrency:
   group: yocto-kas-${{ github.ref }}
@@ -21,7 +21,6 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      # (선택) Yocto 캐시: 네트워크/시간 절약
       - name: Restore DL & SSTATE caches
         uses: actions/cache@v4
         with:
@@ -32,22 +31,31 @@ jobs:
           restore-keys: |
             yocto-${{ runner.os }}-
 
-      # kas 전용 액션: 내부적으로 컨테이너 실행 + 권한/UID 정리까지 처리
-      - name: Build via kas-action
-        uses: kas-project/kas-action@v2
-        with:
-          file: qemu.yml            # 리포 루트에 qemu.yml이 있을 때
-          # target: core-image-sato # 필요시 지정 (qemu.yml target에 이미 있으면 생략 가능)
-          ssh_auth_sock: false      # SSH 키 안 쓰면 false 유지
+      - name: Pull kas image
+        run: docker pull ghcr.io/siemens/kas/kas:latest
 
-      # 산출물 업로드 (필요한 경로만)
+      - name: Validate kas config
+        run: |
+          docker run --rm \
+            -u "$(id -u):$(id -g)" \
+            -v "$PWD:/work" -w /work \
+            ghcr.io/siemens/kas/kas:latest \
+            dump qemu.yml > /dev/null
+
+      - name: Build with kas (docker run, UID/GID 매핑)
+        run: |
+          docker run --rm \
+            -u "$(id -u):$(id -g)" \
+            -v "$PWD:/work" -w /work \
+            ghcr.io/siemens/kas/kas:latest \
+            build qemu.yml
+
       - name: Upload deploy artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: yocto-deploy
-          path: |
-            build/tmp/deploy/images/**/*
+          path: build/tmp/deploy/images/**/*
           if-no-files-found: warn
           retention-days: 7
 
