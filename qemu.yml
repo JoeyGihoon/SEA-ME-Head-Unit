@@ -1,6 +1,6 @@
 # Yocto QEMU(x86_64) with Sato + Qt6 + SocketCAN
 header:
-  version: 11
+  version: 14
 build_system: oe
 
 machine: qemux86-64
