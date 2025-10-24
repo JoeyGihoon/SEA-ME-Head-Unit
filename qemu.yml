@@ -1,3 +1,4 @@
+# Yocto QEMU(x86_64) with Sato + Qt6 + SocketCAN
 header:
   version: 11
 build_system: oe
@@ -5,7 +6,7 @@ build_system: oe
 machine: qemux86-64
 distro: poky
 target:
-  - core-image-minimal    # 먼저 minimal로 성공 → 필요 시 sato로 올려도 됨
+  - core-image-sato
 
 repos:
   poky:
@@ -16,10 +17,59 @@ repos:
       meta-poky:
       meta-yocto-bsp:
 
+  # meta-openembedded: can-utils, iproute2 등 유틸/라이브러리
+  meta-openembedded:
+    url: https://github.com/openembedded/meta-openembedded.git
+    branch: scarthgap
+    layers:
+      meta-oe:
+      meta-networking:
+      meta-python:
+
+  # Qt6 레이어 (Scarthgap 호환 분기)
+  meta-qt6:
+    url: https://code.qt.io/yocto/meta-qt6.git
+    branch: 6.6
+    layers:
+      meta-qt6:
+
+# Yocto 빌드/재현성 속도 최적화 (그대로 유지 추천)
 local_conf_header:
   speedups: |
     BB_HASHSERVE_UPSTREAM = "wss://hashserv.yoctoproject.org/ws"
     SSTATE_MIRRORS ?= "file://.* http://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
     BB_HASHSERVE = "auto"
     BB_SIGNATURE_HANDLER = "OEEquivHash"
+
+  # ===== Qt6 + Sato + X11/GL =====
+  qt6_and_graphics: |
+    # Sato는 기본 X11이므로 X11 + OpenGL 활성화
+    DISTRO_FEATURES:append = " x11 opengl "
+
+    # qtbase 기능 확장
+    PACKAGECONFIG:append:pn-qtbase = " widgets opengl sql-sqlite"
+
+    # Wayland도 같이 쓰고 싶다면(선택):
+    # DISTRO_FEATURES:append = " wayland "
+    # IMAGE_INSTALL:append = " weston "
+
+  # ===== 이미지에 필요한 패키지 추가 =====
+  image_packages: |
+    # Qt6 런타임 + QML
+    IMAGE_INSTALL:append = " \
+        qtbase qtbase-tools qtbase-plugins \
+        qtdeclarative qtquickcontrols2 \
+        qtwayland \
+        qtserialbus qtserialbus-plugins \
+    "
+
+    # SocketCAN 유틸 / 네트워킹 / 커널 모듈 세트
+    IMAGE_INSTALL:append = " \
+        can-utils iproute2 \
+        kernel-modules \
+    "
+
+  # ===== CAN 모듈 자동 로드 (vcan, can_raw) =====
+  can_autoload: |
+    KERNEL_MODULE_AUTOLOAD:append = " vcan can_raw "
 
