@@ -1,7 +1,6 @@
 name: Yocto (kas) — QEMU
-
 on:
-  workflow_dispatch: {}   # 수동 실행만
+  workflow_dispatch: {}
 
 concurrency:
   group: yocto-kas-${{ github.ref }}
@@ -10,9 +9,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-22.04
-
-    permissions:
-      contents: read
+    permissions: { contents: read }
 
     steps:
       - name: Checkout
@@ -21,6 +18,19 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      # 공간 확보(호스티드 러너 한계 보완)
+      - name: Maximize build space
+        run: |
+          sudo rm -rf /usr/local/lib/android || true
+          sudo rm -rf /opt/ghc              || true
+          sudo rm -rf /usr/local/.ghcup     || true
+          sudo rm -rf /opt/hostedtoolcache  || true
+          sudo rm -rf /opt/az               || true
+          sudo rm -rf /usr/share/dotnet     || true
+          sudo docker system prune -af      || true
+          df -h
+
+      # Yocto 캐시(다음 빌드 가속)
       - name: Restore DL & SSTATE caches
         uses: actions/cache@v4
         with:
@@ -42,7 +52,7 @@ jobs:
             ghcr.io/siemens/kas/kas:latest \
             dump qemu.yml > /dev/null
 
-      - name: Build with kas (docker run, UID/GID 매핑)
+      - name: Build with kas
         run: |
           docker run --rm \
             -u "$(id -u):$(id -g)" \
@@ -58,4 +68,11 @@ jobs:
           path: build/tmp/deploy/images/**/*
           if-no-files-found: warn
           retention-days: 7
+
+      # tmp 정리(디스크 고갈 방지)
+      - name: Cleanup tmp to free space
+        if: always()
+        run: |
+          rm -rf build/tmp || true
+          df -h
 
