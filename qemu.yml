@@ -13,25 +13,25 @@ repos:
     url: https://git.yoctoproject.org/poky
     branch: scarthgap
     layers:
-      meta:
-      meta-poky:
-      meta-yocto-bsp:
+      - meta
+      - meta-poky
+      - meta-yocto-bsp
 
   # meta-openembedded: can-utils, iproute2 등 유틸/라이브러리
   meta-openembedded:
     url: https://github.com/openembedded/meta-openembedded.git
     branch: scarthgap
     layers:
-      meta-oe:
-      meta-networking:
-      meta-python:
+      - meta-oe
+      - meta-networking
+      - meta-python
 
   # Qt6 레이어 (Scarthgap 호환 분기)
   meta-qt6:
     url: https://code.qt.io/yocto/meta-qt6.git
-    branch: 6.6
+    branch: "6.6"
     layers:
-      meta-qt6:
+      - meta-qt6
 
 # Yocto 빌드/재현성 속도 최적화 (그대로 유지 추천)
 local_conf_header:
