@@ -1,0 +1,5 @@
+module TEAM5
+typeinfo appTEAM5.qmltypes
+prefer :/TEAM5/
+Main 1.0 Main.qml
+
