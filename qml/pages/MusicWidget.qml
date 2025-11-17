@@ -5,7 +5,7 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: musicWidget
-    width: 200
+    width: 220
     height: 560
 
     // 외부에서 쓰는 API
@@ -46,7 +46,7 @@ Item {
                 anchors.top: musicTitle.bottom
                 anchors.topMargin: 5
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: 150
+                width: 170
                 height: 3
                 radius: 2
 

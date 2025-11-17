@@ -5,7 +5,7 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: modeWidget
-    width: 200
+    width: 220
     height: 560
 
     // 외부에서 쓰는 API
@@ -36,7 +36,7 @@ Item {
                 anchors.leftMargin: 10
                 anchors.top: parent.top
                 anchors.topMargin: 10
-                text: "Settings"
+                text: "Ambient Light"
                 font.pixelSize: 24
                 color: "#d95353"
             }
@@ -46,7 +46,7 @@ Item {
                 anchors.top: modeTitle.bottom
                 anchors.topMargin: 5
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: 150
+                width: 170
                 height: 3
                 radius: 2
 

@@ -12,7 +12,7 @@ Item {
     Rectangle {
         id: topBar
         width: parent.width
-        height: 40
+        height: 60
         color: "#041c2e"         // 상단 바 배경색 (필요 시 조정)
         anchors.top: parent.top
 
@@ -24,12 +24,12 @@ Item {
             color: "#dbe3ee"
             font.family: "Roboto"       // 예: Roboto, Noto Sans, Open Sans 등
             //font.weight: Font.Light     // 또는 Font.Thin
-            font.pixelSize: 28
+            font.pixelSize: 32
         }
 
         Image {
             id: frontButton_grey
-            width: 25; height: 25
+            width: 40; height: 40
             anchors.right: parent.right
             anchors.rightMargin: 6
             anchors.verticalCenter: parent.verticalCenter
@@ -49,7 +49,7 @@ Item {
                 id: backIcon
                 anchors.centerIn: parent
                 source: "qrc:/qml/images/left_green.png"
-                width: 24; height: 24
+                width: 40; height: 40
                 fillMode: Image.PreserveAspectFit
                 opacity: mouseArea.pressed ? 0.6 : (mouseArea.containsMouse ? 0.85 : 1.0)
                 scale: mouseArea.pressed ? 0.92 : 1.0
@@ -83,8 +83,8 @@ Item {
         width: 1024
         height: 600
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: 40
+        anchors.top: topBar.bottom
+        //anchors.topMargin: 40
 
         onLoadingChanged: {
                     if (loadRequest.status === WebEngineLoadRequest.LoadFailedStatus) {

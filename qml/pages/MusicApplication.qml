@@ -27,7 +27,7 @@ Item {
     Rectangle {
         id: topBar
         width: parent.width
-        height: 40
+        height: 60
         color: "#041c2e"
         anchors.top: parent.top
 
@@ -35,15 +35,15 @@ Item {
             id: titleText
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            text: "Music"
+            text: "Music Player"
             color: "#dbe3ee"
             font.family: "Roboto"
-            font.pixelSize: 28
+            font.pixelSize: 32
         }
 
         Image {
             id: frontButton_grey
-            width: 25; height: 25
+            width: 40; height: 40
             anchors.right: parent.right
             anchors.rightMargin: 6
             anchors.verticalCenter: parent.verticalCenter
@@ -63,7 +63,7 @@ Item {
                 id: backIcon
                 anchors.centerIn: parent
                 source: "qrc:/qml/images/left_green.png"
-                width: 24; height: 24
+                width: 40; height: 40
                 fillMode: Image.PreserveAspectFit
                 opacity: mouseArea.pressed ? 0.6 : (mouseArea.containsMouse ? 0.85 : 1.0)
                 scale: mouseArea.pressed ? 0.92 : 1.0
@@ -225,7 +225,7 @@ Item {
             Label {
                 visible: trackModel.count === 0
                 anchors.centerIn: parent
-                text: "USB를 꽂고 mp3 파일을 넣어주세요"
+                text: "Please Insert USB with mp3 files"
                 color: "#d0d7e2"
                 font.pixelSize: 16
             }

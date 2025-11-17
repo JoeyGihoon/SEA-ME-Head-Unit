@@ -1,13 +1,19 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
+import QtGraphicalEffects 1.0
 
 ApplicationWindow {
     id: mainWindow
     visible: true
+    flags: Qt.FramelessWindowHint
+    //visibility: Window.FullScreen
     width: 1024
     height: 600
     title: "TEAM5 HU"
+
+    property color backgroundTint: Qt.rgba(1, 0, 0, 0) // 완전 투명 (아무 색도 안 입힘)
+    property real backgroundSliderValue: 0.0
 
     Image {
         id: backgroundImage
@@ -15,19 +21,13 @@ ApplicationWindow {
         source: "qrc:/qml/images/dark-blue-product-background.jpg"   // 배경으로 쓰려는 이미지 경로
         fillMode: Image.PreserveAspectCrop // 화면 꽉 차게, 비율 유지
     }
-
-    // Image {
-    //     id: car
-    //     width: 700
-    //     height: parent.height
-    //     anchors.right: parent.right
-    //     anchors.top: parent.top
-    //     anchors.margins: -100
-    //     anchors.topMargin: 50
-    //     source: "qrc:qml/images/car.png"
-    //     fillMode: Image.PreserveAspectFit
-    //     smooth: true
-    // }
+    ColorOverlay {
+        id: mainBackgroundOverlay
+        anchors.fill: backgroundImage
+        source: backgroundImage
+        color: mainWindow.backgroundTint
+        Behavior on color { ColorAnimation { duration: 200 } }
+    }
 
     StackView{
         id: stackView
@@ -46,7 +46,7 @@ ApplicationWindow {
                 widthData: 100
                 heightData: 540
                 anchors.left: parent.left
-                anchors.leftMargin: 12
+                // anchors.leftMargin: 1
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.verticalCenterOffset: 20
             }
@@ -56,7 +56,7 @@ ApplicationWindow {
                 anchors.top: gear_widget.top
                 anchors.topMargin: -10
                 anchors.left: gear_widget.right
-                anchors.leftMargin: -20
+                anchors.leftMargin: -25
 
                 onClicked: stackView.push("qrc:/qml/pages/WeatherApplication.qml")
             }
@@ -69,7 +69,7 @@ ApplicationWindow {
                 anchors.top: gear_widget.top
                 anchors.topMargin: -10
                 anchors.left: weather_widget.right
-                anchors.leftMargin: -20
+                anchors.leftMargin: -35
 
                 onClicked: stackView.push("qrc:/qml/pages/MapApplication.qml")
             }
@@ -80,7 +80,7 @@ ApplicationWindow {
                 anchors.top: gear_widget.top
                 anchors.topMargin: -10
                 anchors.left: map_widget.right
-                anchors.leftMargin: -20
+                anchors.leftMargin: -35
 
                 onClicked: stackView.push("qrc:/qml/pages/YoutubeApplication.qml")
             }
@@ -91,7 +91,7 @@ ApplicationWindow {
                 anchors.top: gear_widget.top
                 anchors.topMargin: -10
                 anchors.left: youtube_widget.right
-                anchors.leftMargin: -20
+                anchors.leftMargin: -35
 
                 onClicked: stackView.push("qrc:/qml/pages/MusicApplication.qml")
             }
@@ -102,7 +102,12 @@ ApplicationWindow {
                 anchors.top: gear_widget.top
                 anchors.topMargin: -10
                 anchors.left: music_widget.right
-                anchors.leftMargin: -20
+                anchors.leftMargin: -35
+
+                onClicked: stackView.push(
+                               "qrc:/qml/pages/LightApplication.qml",
+                               { mainWindow: mainWindow }
+                            )
             }
 
         }

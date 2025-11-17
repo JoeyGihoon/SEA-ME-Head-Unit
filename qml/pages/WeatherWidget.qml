@@ -2,7 +2,7 @@ import QtQuick 2.0
 import QtGraphicalEffects 1.0
 Item {
     id: weatherWidget
-    width: 200
+    width: 220
     height: 560
 
     signal clicked()
@@ -39,7 +39,7 @@ Item {
                 anchors.top: weatherTitle.bottom
                 anchors.topMargin: 5
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: 150
+                width: 170
                 height: 3
                 radius: 2
 
@@ -69,7 +69,7 @@ Item {
                     id: region
                     text: ""
                     // text: "Wolfsburg"
-                    font.pixelSize: 25
+                    font.pixelSize: 28
                     color: "white"
                     anchors.horizontalCenter: parent.horizontalCenter
                     horizontalAlignment: Text.AlignHCenter
@@ -89,7 +89,7 @@ Item {
                 // 온도
                 Text {
                     id: tempInfo
-                    font.pixelSize: 25
+                    font.pixelSize: 32
                     color: "white"
                     text: ""                     // 수신 전엔 비워둠
                     anchors.horizontalCenter: parent.horizontalCenter
