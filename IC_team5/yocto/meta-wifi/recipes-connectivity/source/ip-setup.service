@@ -1,0 +1,16 @@
+[Unit]
+Description=WPA Supplicant
+Requires=udhcpc-i-wlan0.service
+After=udhcpc-i-wlan0.service
+Wants=network.target
+
+[Service]
+User=root
+ExecStartPre=/usr/bin/sh -c "while ! ip addr show wlan0 | grep -q 'inet '; do sleep 1; done"
+ExecStart=/usr/bin/python3 /opt/IC_someip/json/change_ip.py
+Restart=on-failure
+
+
+[Install]
+WantedBy=multi-user.target
+
