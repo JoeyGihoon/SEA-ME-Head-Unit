@@ -16,22 +16,24 @@ Overall, the goal of this project is to offer a unified development environment 
 ![architecture](https://github.com/user-attachments/assets/3815f4dd-7300-4212-a2ee-b338cee825fb)
 
 ## 3. Build & Installation
-
+This system must be built on an Ubuntu 22 environment.
 ```bash
 git clone https://github.com/JoeyGihoon/SEA-ME-Head-Unit.git
-'''
+```
 
-3.1 Common Setup
+### 3.1 Common Setup
 
 Before building images, configure your Wi-Fi settings in wpa_supplicant.conf-sane:
 
-...
+```
 network={
     ssid="Your Wifi"
     psk="Your password"
     key_mgmt=Your Authentication
 }
-
+```
 
 File location:
 SEA-ME-Head-Unit/IC_team5/yocto/poky/meta/recipes-connectivity/wpa-supplicant/wpa-supplicant/wpa_supplicant.conf-sane
+
+
