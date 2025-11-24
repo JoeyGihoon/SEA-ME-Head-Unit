@@ -13,3 +13,4 @@ Overall, the goal of this project is to offer a unified development environment 
 
 ## 2. Architecture
 
+![architecture](https://github.com/user-attachments/assets/3815f4dd-7300-4212-a2ee-b338cee825fb)
