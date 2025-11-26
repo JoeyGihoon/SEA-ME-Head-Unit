@@ -7,8 +7,6 @@ import QtMultimedia 5.15
 
 Item {
     id: musicApplication
-    width: 1024
-    height: 600
     property bool showControls: false
     property int currentTrack: -1
     signal backRequested()

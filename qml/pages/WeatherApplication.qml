@@ -4,8 +4,6 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: weatherApplication
-    width: 1024
-    height: 600
 
     property string currentCity: ""
     property real   currentTemp: NaN
@@ -110,7 +108,7 @@ Item {
         TextField {
             id: searchField
             placeholderText: "Enter the city..."
-            width: 200
+            width: 500
 
             onTextChanged: searchText = text
         }
@@ -167,7 +165,7 @@ Item {
     Row {
         id: forecastInfo
         anchors.top: searchBox.bottom
-        anchors.topMargin: 300
+        anchors.topMargin: 280
         anchors.horizontalCenter: parent.horizontalCenter
         spacing: 30
 

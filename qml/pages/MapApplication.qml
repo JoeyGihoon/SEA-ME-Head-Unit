@@ -3,8 +3,6 @@ import QtWebEngine 1.7
 
 Item {
     id: mapApplication
-    width: 1024
-    height: 600
 
     signal backRequested()
 
@@ -80,11 +78,10 @@ Item {
 
     WebEngineView {
         id: mapObject
-        width: 1024
-        height: 600
-        anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: topBar.bottom
-        //anchors.topMargin: 40
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
 
         onLoadingChanged: {
                     if (loadRequest.status === WebEngineLoadRequest.LoadFailedStatus) {

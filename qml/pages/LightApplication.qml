@@ -4,8 +4,6 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: lightApplication
-    width: 1024
-    height: 600
 
     property var mainWindow
     // 뒤로가기 / 배경색 적용 시그널

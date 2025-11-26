@@ -19,8 +19,6 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: root
-    width: 1024
-    height: 600
 
     // ===== 외부로 보내는 시그널 (StackView.pop 등에 연결)
     signal backRequested()

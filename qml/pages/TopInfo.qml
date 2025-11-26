@@ -28,7 +28,7 @@ AppWidget {
             id: topCenterLogo
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            anchors.topMargin: -15
+            anchors.topMargin: -20
             source: "qrc:/qml/images/m5logo.png"
             width: 100; height: 80
             fillMode: Image.PreserveAspectFit
