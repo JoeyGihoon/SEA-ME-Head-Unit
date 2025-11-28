@@ -20,6 +20,7 @@ ICStubImpl::~ICStubImpl(){
 
 void ICStubImpl::setGear(const std::shared_ptr<CommonAPI::ClientId> _client, std::string _gear, setGearReply_t _reply){
     std::cout << "gear :" << _gear << "\n";
+    qDebug() << "[ICStubImpl] setGear called with" << QString::fromStdString(_gear);
     if(_gear == "Start"){
         emit signalStart();
         _reply(0);
@@ -60,4 +61,3 @@ void ICStubImpl::notifyGearStatusChanged(std::string gearValue){
 void ICStubImpl::notifyLRSignStatusChanged(int32_t signValue){
     fireLrSignStatusChangedEvent(signValue);
 }
-

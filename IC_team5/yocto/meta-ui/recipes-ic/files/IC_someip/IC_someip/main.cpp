@@ -82,11 +82,12 @@ int main(int argc, char *argv[])
     QObject::connect(Service.get(), &ICStubImpl::signalGear, gearPtr.get(), &Gear::receiveGear);
     QObject::connect(Service.get(), &ICStubImpl::signalStart, gearPtr.get(), &Gear::clientConnectedSignal);
     QObject::connect(Service.get(), &ICStubImpl::signalGear, Service_inter.get(), &IC_interStubImpl::notifyGearStatusChanged);
-    QObject::connect(Service.get(), &ICStubImpl::signalMode, modePtr.get(), &Mode::receiveMode);
-    QObject::connect(lrsignPtr.get(), &LRSign::broadcastDirection, Service.get(), &ICStubImpl::notifyLRSignStatusChanged);
+    // Only gear path kept; other mode/LRSign hookups disabled.
+    // QObject::connect(Service.get(), &ICStubImpl::signalMode, modePtr.get(), &Mode::receiveMode);
+    // QObject::connect(lrsignPtr.get(), &LRSign::broadcastDirection, Service.get(), &ICStubImpl::notifyLRSignStatusChanged);
 
     QObject::connect(Service_inter.get(), &IC_interStubImpl::signalGear_inter,gearPtr.get(), &Gear::receiveGear);
-    QObject::connect(Service_inter.get(), &IC_interStubImpl::signalLrsign_inter,lrsignPtr.get(),&LRSign::sendLrsignRandom);
+    // QObject::connect(Service_inter.get(), &IC_interStubImpl::signalLrsign_inter,lrsignPtr.get(),&LRSign::sendLrsignRandom);
     QObject::connect(Service_inter.get(), &IC_interStubImpl::signalGear_inter,Service.get(), &ICStubImpl::notifyGearStatusChanged);
     //engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     // 'Start'가 인터 서비스로 들어와도 Ready → 주행으로 전환
@@ -174,7 +175,6 @@ int main(int argc, char *argv[])
     }
     ptrSpeedometer->setModeClass(modePtr.get());
 
-
     /*///////////////////////////////////////////////////////// test Battery gauge with random value */
     qreal battery = 0.0;
     qreal previousBattery = 0.0;
@@ -231,6 +231,7 @@ int main(int argc, char *argv[])
 
         qDebug() << "Battery : " << battery;
         qDebug() << "Battery percentage : " << batteryPercentage;
+        qDebug() << "Current gear:" << gearPtr->gearValue();
         batteryPtr->setBatteryValue(batteryPercentage);
     });
     timer_test_rpm->start(1000);

@@ -12,8 +12,9 @@ Restart=always
 RestartSec=0
 UtmpIdentifier=%I
 TTYPath=/dev/%I
-TTYReset=yes
-TTYVHangup=yes
+TTYReset=no
+TTYVHangup=no
+TTYVTDisallocate=no
 KillMode=process
 IgnoreSIGPIPE=no
 SendSIGHUP=yes
@@ -21,4 +22,3 @@ StopSignal=SIGTERM
 
 [Install]
 WantedBy=getty.target
-

@@ -5,10 +5,11 @@ Wants=network.target
 [Service]
 User=root
 ExecStart=/usr/sbin/wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf
-Restart=on-failure
+ExecStartPost=/sbin/iw dev wlan0 set power_save off
+Restart=always
+RestartSec=3
 Type=forking
 
 
 [Install]
 WantedBy=multi-user.target
-

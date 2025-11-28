@@ -1,0 +1,12 @@
+[Unit]
+Description=Set static IP on eth0
+After=network-pre.target
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "ip link set eth0 up; ip addr replace 192.168.10.1/24 dev eth0"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

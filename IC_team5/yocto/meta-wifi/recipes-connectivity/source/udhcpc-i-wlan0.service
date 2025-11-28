@@ -4,8 +4,9 @@ Requires=wpa-supplicant-wlan0.service
 After=wpa-supplicant-wlan0.service
 Wants=network.target
 [Service]
-ExecStart=/sbin/udhcpc -i wlan0
-Restart=on-failure
+ExecStart=/sbin/udhcpc -b -i wlan0
+Restart=always
+RestartSec=3
 
 [Install]
 WantedBy=multi-user.target

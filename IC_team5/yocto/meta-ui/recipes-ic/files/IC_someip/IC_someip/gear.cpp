@@ -12,6 +12,7 @@ void Gear::setICStubImpl(ICStubImpl *icStubImpl){
 void Gear::receiveGear(std::string command)
 {
     qt_gear = QString::fromStdString(command);
+    qDebug() << "[Gear] receiveGear:" << qt_gear;
     emit gearValueChanged();
 }
 
